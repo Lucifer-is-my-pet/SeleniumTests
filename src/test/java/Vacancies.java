@@ -3,11 +3,11 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 import org.openqa.selenium.*;
-
-public class Vacancies extends BaseRunner {
+// http://www.apache-maven.ru/install.html, качать бинарник, в PATH добавить JAVA_HOME, драйвера браузеров и полный путь до maven
+public class Vacancies extends BaseRunner { // mvn test -Dtest=Vacancies -Dbrowser=firefox
 
     @Test
-    public void testVacanciesErrors() {
+    public void testVacanciesErrors() { // todo кликать "Отправить" ?
         driver.get(baseUrl);
         driver.findElement(By.name("name")).click();
         driver.findElement(By.name("birthday")).click();
