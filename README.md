@@ -24,6 +24,7 @@
 
 В ответе на домашнее задание присылайте ссылку на последний коммит
 <hr>
+
 ## Запуск: ##
 
 ``mvn test -Dtest=Vacancies -Dbrowser=[chrome|firefox]``
