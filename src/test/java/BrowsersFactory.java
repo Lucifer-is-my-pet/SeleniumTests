@@ -22,16 +22,16 @@ public enum BrowsersFactory {
             options.addPreference("dom.webnotifications.enabled", false);
             return new FirefoxDriver(options);
         }
-    },
+    }/*,
 
     opera {
         public WebDriver create() {
-            OperaOptions options_opera = new OperaOptions();
-//            options_opera.setBinary("C:/Program Files/Opera/56.0.3051.52/Opera.exe");
-            options_opera.addArguments("--disable-notifications");
-            return new OperaDriver(options_opera);
+            OperaOptions options = new OperaOptions();
+            options.setBinary(System.getProperty("operaBinary"));
+            options.addArguments("--disable-notifications");
+            return new OperaDriver(options);
         }
-    };
+    }*/;
 
     public WebDriver create() {
         return null;
