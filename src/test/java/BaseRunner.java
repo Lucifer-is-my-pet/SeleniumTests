@@ -11,7 +11,11 @@ public class BaseRunner {
 
     @Before
     public void setUp() {
-        driver = BrowsersFactory.valueOf(browserName).create();
+        try {
+            driver = BrowsersFactory.valueOf(browserName).create();
+        } catch (NullPointerException | IllegalArgumentException e) {
+            driver = BrowsersFactory.valueOf("chrome").create();
+        }
         driver.manage().window().maximize();
         baseUrl = "https://www.tinkoff.ru/career/vacancies/";
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -22,12 +26,4 @@ public class BaseRunner {
         driver.quit();
     }
 
-/*    private WebDriver getDriver() {
-        try {
-            BrowsersFactory.valueOf(System.getProperty("browser"));
-        } catch (NullPointerException | IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        return BrowsersFactory.valueOf(browserName).create();
-    }*/
 }

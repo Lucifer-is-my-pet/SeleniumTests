@@ -6,7 +6,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.opera.OperaOptions;
 
-public enum  BrowsersFactory {
+public enum BrowsersFactory {
 
     chrome {
         public WebDriver create() {
