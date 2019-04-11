@@ -3,12 +3,16 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.Select;
+
+import java.util.ArrayList;
 
 public class Vacancies extends BaseRunner {
 
     @Test
     public void testVacanciesErrors() {
         driver.get(baseUrl);
+
         driver.findElement(By.name("name")).click();
         driver.findElement(By.name("birthday")).click();
         driver.findElement(By.name("city")).click();
@@ -38,6 +42,7 @@ public class Vacancies extends BaseRunner {
     @Test
     public void testVacanciesInvalid() {
         driver.get(baseUrl);
+
         driver.findElement(By.name("name")).click();
         driver.findElement(By.name("name")).clear();
         driver.findElement(By.name("name")).sendKeys("!!!");
@@ -76,5 +81,25 @@ public class Vacancies extends BaseRunner {
                 driver.findElement(By.xpath("(//div[contains(@class, 'ui-form-field-error-message') and contains(@class, 'ui-form-field-error-message_ui-form')])[4]")).getText());
         assertEquals("Код города/оператора должен начинаться с цифры 3, 4, 5, 6, 8, 9",
                 driver.findElement(By.xpath("(//div[contains(@class, 'ui-form-field-error-message') and contains(@class, 'ui-form-field-error-message_ui-form')])[5]")).getText());
+    }
+
+    @Test
+    public void switchTabs() {
+        driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "t");
+        driver.get("https://www.google.ru/");
+        ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles()); // ???
+        driver.switchTo().window(tabs.get(1));
+        driver.close();
+        driver.switchTo().window(tabs.get(0));
+
+/*        //Open a new tab using Ctrl + t
+        //Switch between tabs using Ctrl + \t
+        driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL +"\t");*/
+
+        driver.findElement(By.name("q")).sendKeys("мобайл тинькофф n");
+//        Select dropdown = new Select(driver.findElement(By.id("identifier")));
+        driver.findElement(By.xpath("//*[contains(text(), 'тарифы')]/parent::span")).click();
+//        driver.findElement(By.xpath("//a[contains(@href,'listDetails.do')]")).click();
+        driver.findElement(By.xpath("//cite[text()='https://www.tinkoff.ru/mobile-operator/tariffs/']")).click();
     }
 }
