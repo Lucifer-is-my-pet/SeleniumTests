@@ -107,6 +107,7 @@ public class Vacancies extends BaseRunner {
 
         driver.switchTo().window(tabs.get(2));
         assertEquals("https://www.tinkoff.ru/mobile-operator/tariffs/", driver.getCurrentUrl());
+        driver.close();
     }
 
     @Test
@@ -126,6 +127,7 @@ public class Vacancies extends BaseRunner {
         driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
         driver.findElement(By.xpath("//div[contains(text(), 'Краснодарский кр.')]")).click();
         sleep(3000); // страница перезагружается
+
         String krasnodarAmount = StringUtils.join(driver.findElement(By.xpath("//h3[@data-qa-file='UITitle']")).getText().split("\\D+"), "").trim();
         assertNotEquals(moscowAmount, krasnodarAmount);
 
@@ -133,7 +135,6 @@ public class Vacancies extends BaseRunner {
         driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // список
         driver.findElement(By.xpath("//span[contains(text(), 'Безлимитный интернет')]")).click();
         driver.findElement(By.xpath("//label[contains(text(), 'Режим модема (')]/preceding-sibling::div")).click();
-
         driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // список
         driver.findElement(By.xpath("//span[contains(text(), 'Безлимитные минуты')]")).click();
 
@@ -142,16 +143,36 @@ public class Vacancies extends BaseRunner {
         driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
         driver.findElement(By.xpath("//div[contains(text(), 'Москва и Московская обл.')]")).click();
         sleep(3000); // страница перезагружается
+
         driver.findElement(By.xpath("//label[contains(text(), 'Безлимитные СМС (')]/preceding-sibling::div")).click();
-        driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // список
+        driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // Интернет
         driver.findElement(By.xpath("//span[contains(text(), 'Безлимитный интернет')]")).click();
         driver.findElement(By.xpath("//label[contains(text(), 'Режим модема (')]/preceding-sibling::div")).click();
-
-        driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // список
+        driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // Звонки
         driver.findElement(By.xpath("//span[contains(text(), 'Безлимитные минуты')]")).click();
+
         String moscowAmountMax = StringUtils.join(driver.findElement(By.xpath("//h3[@data-qa-file='UITitle']")).getText().split("\\D+"), "").trim();
         assertEquals(moscowAmountMax, krasnodarAmountMax);
 
+        driver.close();
+    }
+
+    @Test
+    public void activeButton() {
+        ((JavascriptExecutor) driver).executeScript("window.open('https://www.tinkoff.ru/mobile-operator/tariffs/','_blank');");
+        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(1));
+
+        driver.findElement(By.xpath("//label[contains(text(), 'Мессенджеры (')]/preceding-sibling::div")).click();
+        driver.findElement(By.xpath("//label[contains(text(), 'Социальные сети (')]/preceding-sibling::div")).click();
+        driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // Интернет
+        driver.findElement(By.xpath("//span[contains(text(), '0 ГБ')]")).click();
+        driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // Звонки
+        driver.findElement(By.xpath("//span[contains(text(), '0 минут')]")).click();
+
+        String amount = StringUtils.join(driver.findElement(By.xpath("//h3[@data-qa-file='UITitle']")).getText().split("\\D+"), "").trim();
+        assertEquals("0", amount);
+
+        assertTrue(driver.findElement(By.xpath("//div[contains(text(), 'Заказать сим-карту')]/ancestor::button")).isEnabled());
     }
 }
-//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')]
