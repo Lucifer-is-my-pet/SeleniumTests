@@ -4,6 +4,8 @@ import org.junit.*;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
 
@@ -12,7 +14,7 @@ import java.util.ArrayList;
 public class Vacancies extends BaseRunner {
 
     @Test
-    public void testVacanciesErrors() {
+    public void checkEmptyFields() {
         driver.get(baseUrl);
 
         driver.findElement(By.name("name")).click();
@@ -42,7 +44,7 @@ public class Vacancies extends BaseRunner {
     }
 
     @Test
-    public void testVacanciesInvalid() {
+    public void checkInvalidInputs() {
         driver.get(baseUrl);
 
         driver.findElement(By.name("name")).click();
@@ -86,7 +88,8 @@ public class Vacancies extends BaseRunner {
     }
 
     @Test
-    public void switchTabs() {
+    @DisplayName("Переключание вкладок")
+    public void checkTabsSwitching() {
         driver.get(baseUrl);
 //        driver.findElement(By.cssSelector("body")).sendKeys(Keys.chord(Keys.CONTROL, "t")); // не работает
 //        driver.get("https://www.google.ru/");
@@ -111,7 +114,8 @@ public class Vacancies extends BaseRunner {
     }
 
     @Test
-    public void changeRegion() throws InterruptedException {
+    @DisplayName("Смена региона")
+    public void checkRegionChange() throws InterruptedException {
         ((JavascriptExecutor) driver).executeScript("window.open('https://www.tinkoff.ru/mobile-operator/tariffs/','_blank');");
         ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(1));
@@ -158,6 +162,7 @@ public class Vacancies extends BaseRunner {
     }
 
     @Test
+    @DisplayName("Активная кнопка")
     public void activeButton() {
         ((JavascriptExecutor) driver).executeScript("window.open('https://www.tinkoff.ru/mobile-operator/tariffs/','_blank');");
         ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
