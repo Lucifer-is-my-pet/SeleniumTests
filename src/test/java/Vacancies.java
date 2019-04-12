@@ -1,3 +1,4 @@
+import org.apache.maven.shared.utils.StringUtils;
 import org.junit.*;
 
 import static java.lang.Thread.sleep;
@@ -120,5 +121,37 @@ public class Vacancies extends BaseRunner {
         sleep(3000); // страница перезагружается
         assertEquals("Москва и Московская обл.", driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).getText());
 
+        String moscowAmount = StringUtils.join(driver.findElement(By.xpath("//h3[@data-qa-file='UITitle']")).getText().split("\\D+"), "").trim();
+
+        driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
+        driver.findElement(By.xpath("//div[contains(text(), 'Краснодарский кр.')]")).click();
+        sleep(3000); // страница перезагружается
+        String krasnodarAmount = StringUtils.join(driver.findElement(By.xpath("//h3[@data-qa-file='UITitle']")).getText().split("\\D+"), "").trim();
+        assertNotEquals(moscowAmount, krasnodarAmount);
+
+        driver.findElement(By.xpath("//label[contains(text(), 'Безлимитные СМС (')]/preceding-sibling::div")).click();
+        driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // список
+        driver.findElement(By.xpath("//span[contains(text(), 'Безлимитный интернет')]")).click();
+        driver.findElement(By.xpath("//label[contains(text(), 'Режим модема (')]/preceding-sibling::div")).click();
+
+        driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // список
+        driver.findElement(By.xpath("//span[contains(text(), 'Безлимитные минуты')]")).click();
+
+        String krasnodarAmountMax = StringUtils.join(driver.findElement(By.xpath("//h3[@data-qa-file='UITitle']")).getText().split("\\D+"), "").trim();
+
+        driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
+        driver.findElement(By.xpath("//div[contains(text(), 'Москва и Московская обл.')]")).click();
+        sleep(3000); // страница перезагружается
+        driver.findElement(By.xpath("//label[contains(text(), 'Безлимитные СМС (')]/preceding-sibling::div")).click();
+        driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // список
+        driver.findElement(By.xpath("//span[contains(text(), 'Безлимитный интернет')]")).click();
+        driver.findElement(By.xpath("//label[contains(text(), 'Режим модема (')]/preceding-sibling::div")).click();
+
+        driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // список
+        driver.findElement(By.xpath("//span[contains(text(), 'Безлимитные минуты')]")).click();
+        String moscowAmountMax = StringUtils.join(driver.findElement(By.xpath("//h3[@data-qa-file='UITitle']")).getText().split("\\D+"), "").trim();
+        assertEquals(moscowAmountMax, krasnodarAmountMax);
+
     }
 }
+//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')]
