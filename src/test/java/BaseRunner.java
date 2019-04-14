@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import java.util.concurrent.TimeUnit;
 
 public class BaseRunner {
+
     WebDriver driver;
     private String browserName = System.getProperty("browser");
     String baseUrl;
