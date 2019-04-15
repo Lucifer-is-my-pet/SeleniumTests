@@ -1,6 +1,7 @@
 import Elements.Button;
 import Elements.Checkbox;
 import Elements.Select;
+import Elements.TextInput;
 import com.sun.org.glassfish.gmbal.Description;
 import org.apache.maven.shared.utils.StringUtils;
 import org.junit.*;
@@ -94,12 +95,14 @@ public class Vacancies extends BaseRunner {
     public void checkTabsSwitching() {
         driver.get(baseUrl);
 
-        ((JavascriptExecutor) driver).executeScript("window.open('https://www.google.ru/','_blank');");
+        ((JavascriptExecutor) driver).executeScript("window.open('https://www.google.ru/','_blank');"); // обычный способ открытия новой вкладки не сработал
         ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(1));
 
-        driver.findElement(By.name("q")).sendKeys("тинькофф мобайл");
-        driver.findElement(By.xpath("//*[contains(text(), 'тарифы')]/parent::span")).click();
+        TextInput query = new TextInput("//input[@name='q']");
+        query.fill(driver, "тинькофф мобайл");
+        Select suggestions = new Select("//input[@name='q']");
+        suggestions.selectOption(driver, "тарифы");
         driver.findElement(By.xpath("//cite[text()='https://www.tinkoff.ru/mobile-operator/tariffs/']")).click();
 
         tabs = new ArrayList<>(driver.getWindowHandles());
@@ -188,9 +191,7 @@ public class Vacancies extends BaseRunner {
         String amount = getAmount("//h3[@data-qa-file='UITitle']");
         assertEquals("0", amount);
 
-        Button orderSim = new Button("//div[text()='Заказать сим-карту']/ancestor::button");
-
-        assertTrue(orderSim.isActive(driver));
+        assertTrue(new Button("//div[text()='Заказать сим-карту']/ancestor::button").isActive(driver));
     }
 
     private void selectMoscow() throws InterruptedException {
