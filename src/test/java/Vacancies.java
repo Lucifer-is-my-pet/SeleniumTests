@@ -1,12 +1,15 @@
+import Elements.Button;
+import Elements.Checkbox;
+import Elements.Select;
 import com.sun.org.glassfish.gmbal.Description;
 import org.apache.maven.shared.utils.StringUtils;
 import org.junit.*;
 
-import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
 
@@ -90,8 +93,7 @@ public class Vacancies extends BaseRunner {
     @DisplayName("Переключение вкладок")
     public void checkTabsSwitching() {
         driver.get(baseUrl);
-//        driver.findElement(By.cssSelector("body")).sendKeys(Keys.chord(Keys.CONTROL, "t")); // не работает
-//        driver.get("https://www.google.ru/");
+
         ((JavascriptExecutor) driver).executeScript("window.open('https://www.google.ru/','_blank');");
         ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(1));
@@ -123,39 +125,38 @@ public class Vacancies extends BaseRunner {
 
         selectMoscow();
 
-        assertEquals("Москва и Московская область", driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).getText());
+        wait.until(ExpectedConditions.textToBePresentInElement(driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")),
+                "Москва и Московская область"));
 
         String moscowAmount = getAmount("//h3[@data-qa-file='UITitle']");
 
         driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
-        driver.findElement(By.xpath("//div[contains(text(), 'Краснодарский кр.')]")).click();
-        sleep(5000); // страница перезагружается
+        driver.findElement(By.xpath("//div[text()='Краснодарский кр.']")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@name='headerSlim']")));
 
         String krasnodarAmount = getAmount("//h3[@data-qa-file='UITitle']");
         assertNotEquals(moscowAmount, krasnodarAmount);
 
         Checkbox unlimitedSms = new Checkbox("//input[@id=2048]"),
                 modemMode = new Checkbox("//input[@id=2058]");
+        Select internet = new Select("//select[@name='internet']/parent::div"),
+                calls = new Select("//select[@name='calls']/parent::div");
 
         unlimitedSms.check(driver);
-        driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // список
-        driver.findElement(By.xpath("//span[contains(text(), 'Безлимитный интернет')]")).click();
+        internet.selectOption(driver, "Безлимитный интернет");
         modemMode.check(driver);
-        driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // список
-        driver.findElement(By.xpath("//span[contains(text(), 'Безлимитные минуты')]")).click();
+        calls.selectOption(driver, "Безлимитные минуты");
 
         String krasnodarAmountMax = getAmount("//h3[@data-qa-file='UITitle']");
 
         driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
-        driver.findElement(By.xpath("//div[contains(text(), 'Москва и Московская обл.')]")).click();
-        sleep(5000); // страница перезагружается
+        driver.findElement(By.xpath("//div[text()='Москва и Московская обл.']")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@name='headerSlim']")));
 
         unlimitedSms.check(driver);
-        driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // Интернет
-        driver.findElement(By.xpath("//span[contains(text(), 'Безлимитный интернет')]")).click();
+        internet.selectOption(driver, "Безлимитный интернет");
         modemMode.check(driver);
-        driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // Звонки
-        driver.findElement(By.xpath("//span[contains(text(), 'Безлимитные минуты')]")).click();
+        calls.selectOption(driver, "Безлимитные минуты");
 
         String moscowAmountMax = getAmount("//h3[@data-qa-file='UITitle']");
         assertEquals(moscowAmountMax, krasnodarAmountMax);
@@ -176,17 +177,20 @@ public class Vacancies extends BaseRunner {
         Checkbox messengers = new Checkbox("//input[@id=2050]"),
                 socialMedia = new Checkbox("//input[@id=2053]");
 
+        Select internet = new Select("//select[@name='internet']/parent::div"),
+                calls = new Select("//select[@name='calls']/parent::div");
+
         messengers.uncheck(driver);
         socialMedia.uncheck(driver);
-        driver.findElement(By.xpath("//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')][1]")).click(); // Интернет
-        driver.findElement(By.xpath("//select[@name='internet']/ancestor::div[@class='ui-dropdown-field']//span[@data-qa-file='UIDropdownSelectItemComponent']")).click();
-        driver.findElement(By.xpath("(//div[contains(@class, 'ui-select__title') and contains(@class, 'ui-select__title_columned')])[2]")).click(); // Звонки
-        driver.findElement(By.xpath("//select[@name='calls']/ancestor::div[@class='ui-dropdown-field']//span[@data-qa-file='UIDropdownSelectItemComponent']")).click();
+        internet.selectOption(driver, "0 ГБ");
+        calls.selectOption(driver, "0 минут");
 
         String amount = getAmount("//h3[@data-qa-file='UITitle']");
         assertEquals("0", amount);
 
-        assertTrue(driver.findElement(By.xpath("//div[contains(text(), 'Заказать сим-карту')]/ancestor::button")).isEnabled());
+        Button orderSim = new Button("//div[text()='Заказать сим-карту']/ancestor::button");
+
+        assertTrue(orderSim.isActive(driver));
     }
 
     private void selectMoscow() throws InterruptedException {
@@ -195,9 +199,9 @@ public class Vacancies extends BaseRunner {
         } else {
             driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
         }
-        driver.findElement(By.xpath("//div[contains(text(), 'Москва и Московская обл.')]")).click();
+
+        driver.findElement(By.xpath("//div[text()='Москва и Московская обл.']")).click();
         assertEquals("Москва и Московская область", driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).getText());
-        sleep(3000); // страница перезагружается
     }
 
     private String getAmount(String locator) {
