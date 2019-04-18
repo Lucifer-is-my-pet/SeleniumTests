@@ -1,5 +1,6 @@
 package Pages;
 
+import org.apache.maven.shared.utils.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,20 +17,7 @@ public class TariffsPage extends BasePage {
         PageFactory.initElements(driver, this);
     }
 
-    @FindBy(xpath = "//input[@name='name']")
-    WebElement name;
 
-    @FindBy(xpath = "//input[@name='birthday']")
-    WebElement birthday;
-
-    @FindBy(xpath = "//input[@name='city']")
-    WebElement city;
-
-    @FindBy(xpath = "//input[@name='email']")
-    WebElement email;
-
-    @FindBy(xpath = "//input[@name='phone']")
-    WebElement phone;
 
     @FindBy(xpath = "//span[@data-qa-file='MvnoRegionConfirmation'][contains(text(), 'Ваш регион —')]")
     WebElement regionQuestion;
@@ -41,11 +29,11 @@ public class TariffsPage extends BasePage {
     WebElement region;
 
     public void open() {
-        goTo("https://www.tinkoff.ru/mobile-operator/tariffs/");
+        goTo(URL);
     }
 
     public void openInNewTab() {
-        openNewTab("https://www.tinkoff.ru/mobile-operator/tariffs/");
+        openNewTab(URL);
         switchToTab("");
     }
 
@@ -53,8 +41,8 @@ public class TariffsPage extends BasePage {
         return checkTitle(PAGE_NAME);
     }
 
-    public boolean checkUrl() {
-        return driver.getCurrentUrl().equals("https://www.tinkoff.ru/mobile-operator/tariffs/");
+    public boolean isUrlCorrect() {
+        return checkUrl(URL);
     }
 
     public void changeRegion(String regionToChange) {
@@ -69,6 +57,10 @@ public class TariffsPage extends BasePage {
 
     public boolean checkRegion(String regionTocheck) {
         return region.getText().equals(regionTocheck);
+    }
+
+    private String getAmount(String locator) {
+        return StringUtils.join(driver.findElement(By.xpath(locator)).getText().split("\\D+"), "").trim();
     }
 
 }

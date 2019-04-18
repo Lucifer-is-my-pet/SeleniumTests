@@ -2,6 +2,7 @@ import Elements.Button;
 import Elements.Checkbox;
 import Elements.Select;
 import Elements.TextInput;
+import Pages.VacanciesPage;
 import com.sun.org.glassfish.gmbal.Description;
 import org.apache.maven.shared.utils.StringUtils;
 
@@ -13,6 +14,8 @@ import org.openqa.selenium.*;
 
 @DisplayName("Вакансии в Тинькофф")
 public class VacanciesTest extends BaseRunner {
+
+    VacanciesPage vp = new VacanciesPage(driver);
 
     @Test
     public void checkEmptyFields() {

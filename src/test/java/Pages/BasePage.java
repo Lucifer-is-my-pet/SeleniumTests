@@ -44,6 +44,10 @@ public class BasePage {
         logger.info("Закрыта вкладка \"" + tabName + "\"");
     }
 
+    public boolean checkUrl(String url) {
+        return driver.getCurrentUrl().equals(url);
+    }
+
     public boolean checkTitle(String title) {
         return driver.getTitle().equals(title);
     }

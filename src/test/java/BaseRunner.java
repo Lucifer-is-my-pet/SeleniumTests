@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.BrowsersFactory;
 import java.util.concurrent.TimeUnit;
 
 public class BaseRunner {
