@@ -4,19 +4,20 @@ import Elements.Select;
 import Elements.TextInput;
 import com.sun.org.glassfish.gmbal.Description;
 import org.apache.maven.shared.utils.StringUtils;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.gen5.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class Tariffs extends BaseRunner {
+@DisplayName("Тарифы Тинькофф Мобайла")
+public class TariffsTest extends BaseRunner {
 
     @Test
     @DisplayName("Переключение вкладок")

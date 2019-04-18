@@ -4,17 +4,15 @@ import Elements.Select;
 import Elements.TextInput;
 import com.sun.org.glassfish.gmbal.Description;
 import org.apache.maven.shared.utils.StringUtils;
-import org.junit.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import java.util.ArrayList;
-
-public class Vacancies extends BaseRunner {
+@DisplayName("Вакансии в Тинькофф")
+public class VacanciesTest extends BaseRunner {
 
     @Test
     public void checkEmptyFields() {

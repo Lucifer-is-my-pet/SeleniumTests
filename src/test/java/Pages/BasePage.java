@@ -1,5 +1,7 @@
 package Pages;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openqa.selenium.WebDriver;
@@ -24,6 +26,10 @@ public class BasePage {
         logger.info("Открыта страница " + url);
     }
 
+    public void openNewTab(String url) {
+        ((JavascriptExecutor) driver).executeScript("window.open('" + url + "','_blank');");
+    }
+
     public void switchToTab(String tabName) {
         this.driver.switchTo().window(tabName);
         this.wait.until(ExpectedConditions.titleContains(tabName));
@@ -37,4 +43,13 @@ public class BasePage {
         this.driver.close();
         logger.info("Закрыта вкладка \"" + tabName + "\"");
     }
+
+    public boolean checkTitle(String title) {
+        return driver.getTitle().equals(title);
+    }
+
+    public void click(String locator) {
+        driver.findElement(By.xpath(locator)).click();
+    }
+
 }

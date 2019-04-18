@@ -6,9 +6,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.Assert.assertEquals;
-
 public class TariffsPage extends BasePage {
+
+    private final String URL = "https://www.tinkoff.ru/mobile-operator/tariffs/";
+    private final String PAGE_NAME = "Тарифы Тинькофф Мобайла";
 
     public TariffsPage(WebDriver driver) {
         super(driver);
@@ -43,8 +44,13 @@ public class TariffsPage extends BasePage {
         goTo("https://www.tinkoff.ru/mobile-operator/tariffs/");
     }
 
-    public boolean checkPageTitle() {
-        return driver.getTitle().equals("Тарифы Тинькофф Мобайла");
+    public void openInNewTab() {
+        openNewTab("https://www.tinkoff.ru/mobile-operator/tariffs/");
+        switchToTab("");
+    }
+
+    public boolean isPageTitleCorrect() {
+        return checkTitle(PAGE_NAME);
     }
 
     public boolean checkUrl() {

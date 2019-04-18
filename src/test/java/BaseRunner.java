@@ -1,5 +1,7 @@
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -12,7 +14,7 @@ public class BaseRunner {
     String baseUrl;
     WebDriverWait wait;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         try {
             driver = BrowsersFactory.valueOf(browserName).create();
@@ -25,7 +27,7 @@ public class BaseRunner {
         this.wait = new WebDriverWait(driver, 5);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         driver.quit();
     }
