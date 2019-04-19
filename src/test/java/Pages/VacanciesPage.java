@@ -1,19 +1,15 @@
 package Pages;
 
 import Application.Application;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import Elements.Button;
+import Elements.Checkbox;
+import Elements.TextInput;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 
 public class VacanciesPage extends BasePage {
 
-    private final String URL = "https://www.tinkoff.ru/mobile-operator/tariffs/";
-
-//    public VacanciesPage(WebDriver driver) {
-//        super(driver);
-//        PageFactory.initElements(driver, this);
-//    }
+    private final String URL = "https://www.tinkoff.ru/career/vacancies/";
 
     public VacanciesPage(Application app) {
         super(app);
@@ -23,22 +19,51 @@ public class VacanciesPage extends BasePage {
         super();
     }
 
-    @FindBy(xpath = "//input[@name='name']")
-    WebElement name;
-
-    @FindBy(xpath = "//input[@name='birthday']")
-    WebElement birthday;
-
-    @FindBy(xpath = "//input[@name='city']")
-    WebElement city;
-
-    @FindBy(xpath = "//input[@name='email']")
-    WebElement email;
-
-    @FindBy(xpath = "//input[@name='phone']")
-    WebElement phone;
-
     public void open() {
         goTo(URL);
+    }
+
+    public void clickAllClickables() {
+        TextInput name = new TextInput("//input[@name='name']"),
+                birthday = new TextInput("//input[@name='birthday']"),
+                city = new TextInput("//input[@name='city']"),
+                email = new TextInput("//input[@name='email']"),
+                phone = new TextInput("//input[@name='phone']");
+        Button addAnotherLink = new Button("//div[@class='schema__addSocialLink_Yyu6i']"),
+                orderSim = new Button("//button[@aria-label='Отправить']"); // Добавить ещё ссылку
+        Checkbox conditions = new Checkbox("//div[@class='ui-checkbox__check']"); // Я согласен с условиями передачи информации
+
+        name.click(driver);
+        birthday.click(driver);
+        city.click(driver);
+        email.click(driver);
+        phone.click(driver);
+        addAnotherLink.click(driver);
+        conditions.click(driver);
+
+        logger.info("Прокликали все поля формы");
+
+        orderSim.click(driver);
+    }
+
+    public boolean checkErrorNearField(String fieldName, String errorText) {
+        logger.info("Проверяем текст ошибки под полем \"" + fieldName + "\"");
+        return driver.findElement(By.xpath("//*[text()='" + fieldName +
+                "']/ancestor::div/following-sibling::div[@data-qa-file='UIFormRowError']")).getText().equals(errorText);
+    }
+
+    public void typeText(String fieldName, String text) {
+        TextInput input = new TextInput(fieldName, true);
+        input.type(driver, text);
+        logger.info("Ввели в поле \"" + fieldName + "\" текст \"" + text + "\"");
+    }
+
+    public void clear(String fieldName, String result) {
+        TextInput input = new TextInput(fieldName, true);
+        do {
+            input.type(driver, Keys.BACK_SPACE);
+        } while (!input.getText(driver).equals(result));
+
+        logger.info("Очистили поле \"" + fieldName + "\"");
     }
 }

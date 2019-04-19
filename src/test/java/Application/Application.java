@@ -13,10 +13,6 @@ public class Application {
     public Logger logger;
     protected WebDriverWait wait;
     protected WebDriver driver;
-    public GoogleMainPage google;
-    public GoogleResultsPage googleResults;
-    public VacanciesPage vacancies;
-    public TariffsPage tariffs;
     public String browserName = "chrome";
 
     public Application() {

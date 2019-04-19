@@ -3,8 +3,6 @@ package Pages;
 import Application.Application;
 import Elements.Select;
 import Elements.TextInput;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.PageFactory;
 
 public class GoogleMainPage extends BasePage {
 
@@ -24,12 +22,12 @@ public class GoogleMainPage extends BasePage {
 
     public void openInNewTab() {
         openNewTab(URL);
-        switchToTab("Google");
+        switchToNextTab("Google");
     }
 
     public void sendQuery(String text) {
         TextInput query = new TextInput("//input[@name='q']");
-        query.fill(super.driver, text);
+        query.type(super.driver, text);
         logger.info("Ищем в Гугле '" + text + "'");
     }
 

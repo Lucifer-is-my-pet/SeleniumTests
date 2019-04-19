@@ -1,8 +1,6 @@
 package Pages;
 
 import Application.Application;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.PageFactory;
 
 public class GoogleResultsPage extends BasePage {
 

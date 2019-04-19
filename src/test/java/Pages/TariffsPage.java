@@ -1,15 +1,12 @@
 package Pages;
 
 import Application.Application;
+import Elements.Button;
 import Elements.Checkbox;
 import Elements.Select;
 import org.apache.maven.shared.utils.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class TariffsPage extends BasePage {
@@ -28,17 +25,13 @@ public class TariffsPage extends BasePage {
         super();
     }
 
-        public void open() {
+    public void open() {
         goTo(URL);
     }
 
     public void openInNewTab() {
         openNewTab(URL);
-        switchToTab(PAGE_NAME);
-    }
-
-    public boolean isPageTitleCorrect() {
-        return checkTitle(PAGE_NAME);
+        switchToNextTab(PAGE_NAME);
     }
 
     public boolean isUrlCorrect() {
@@ -49,8 +42,7 @@ public class TariffsPage extends BasePage {
         try {
             driver.findElement(By.xpath("//span[@data-qa-file='MvnoRegionConfirmation'][contains(text(), 'Ваш регион —')]")).isDisplayed();
             driver.findElement(By.xpath("//span[contains(@class, 'MvnoRegionConfirmation__optionRejection_1NrnL')]")).click();
-        }
-        catch (NoSuchElementException nee) {
+        } catch (NoSuchElementException nee) {
             driver.findElement(By.xpath(regionXPath)).click();
         }
         driver.findElement(By.xpath("//div[text()='" + regionToChange + "']")).click();
@@ -59,6 +51,7 @@ public class TariffsPage extends BasePage {
     }
 
     public boolean checkRegion(String regionToCheck) {
+        logger.info("Проверяем, нужный ли регион установлен");
         return driver.findElement(By.xpath(regionXPath)).getText().equals(regionToCheck);
     }
 
@@ -79,6 +72,26 @@ public class TariffsPage extends BasePage {
         calls.selectOption(driver, "Безлимитные минуты");
 
         logger.info("Установили максимальные настройки тарифов");
+    }
+
+    public void setZeroSettings() {
+        Checkbox messengers = new Checkbox("//input[@id=2050]"),
+                socialMedia = new Checkbox("//input[@id=2053]");
+
+        Select internet = new Select("//select[@name='internet']/parent::div"),
+                calls = new Select("//select[@name='calls']/parent::div");
+
+        messengers.uncheck(driver);
+        socialMedia.uncheck(driver);
+        internet.selectOption(driver, "0 ГБ");
+        calls.selectOption(driver, "0 минут");
+
+        logger.info("Сбросили все настройки тарифов");
+    }
+
+    public boolean isButtonActive(String buttonTitle) {
+        logger.info("Проверяем, активна ли кнопка \"" + buttonTitle + "\"");
+        return new Button("//div[text()='" + buttonTitle + "']/ancestor::button").isActive(driver);
     }
 
 }

@@ -3,14 +3,9 @@ package Pages;
 import Application.Application;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class BasePage extends Application {
@@ -33,7 +28,7 @@ public class BasePage extends Application {
         logger.info("Открыта страница " + url);
     }
 
-    public void switchToTab(String tabName) {
+    public void switchToNextTab(String tabName) {
         ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(1));
         wait.until(ExpectedConditions.titleContains(tabName));
@@ -47,6 +42,7 @@ public class BasePage extends Application {
     }
 
     public boolean checkUrl(String url) {
+        logger.info("Проверяем, верный ли адрес страницы");
         return driver.getCurrentUrl().equals(url);
     }
 
