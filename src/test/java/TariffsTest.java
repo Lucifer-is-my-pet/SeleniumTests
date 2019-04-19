@@ -1,7 +1,9 @@
+import Application.BaseRunner;
 import Elements.Button;
 import Elements.Checkbox;
 import Elements.Select;
 import Elements.TextInput;
+import Pages.*;
 import com.sun.org.glassfish.gmbal.Description;
 import org.apache.maven.shared.utils.StringUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -22,85 +24,59 @@ public class TariffsTest extends BaseRunner {
     @Test
     @DisplayName("Переключение вкладок")
     public void checkTabsSwitching() {
-        driver.get(baseUrl);
+//        VacanciesPage vp = new VacanciesPage(app);
+//        vp.open();
 
-        ((JavascriptExecutor) driver).executeScript("window.open('https://www.google.ru/','_blank');"); // обычный способ открытия новой вкладки не сработал
-        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
-        driver.switchTo().window(tabs.get(1));
+        GoogleMainPage google = new GoogleMainPage(app);
+        google.openInNewTab();
+        google.sendQuery("тинькофф мобайл");
+        google.selectFromSuggestions("тарифы");
 
-        TextInput query = new TextInput("//input[@name='q']");
-        query.fill(driver, "тинькофф мобайл");
-        Select suggestions = new Select("//input[@name='q']");
-        suggestions.selectOption(driver, "тарифы");
-        driver.findElement(By.xpath("//cite[text()='https://www.tinkoff.ru/mobile-operator/tariffs/']")).click();
+        GoogleResultsPage results = new GoogleResultsPage(app);
+        results.click("https://www.tinkoff.ru/mobile-operator/tariffs/");
 
-        tabs = new ArrayList<>(driver.getWindowHandles());
-        driver.switchTo().window(tabs.get(2));
-        assertEquals("Тарифы Тинькофф Мобайла", driver.getTitle());
+        TariffsPage tariffs = new TariffsPage(app);
+        tariffs.checkTitle("Тарифы Тинькофф Мобайла");
+        results.closeCurrentTab();
+        tariffs.switchToTab("Тарифы Тинькофф Мобайла");
 
-        driver.switchTo().window(tabs.get(1));
-        driver.close();
-
-        driver.switchTo().window(tabs.get(2));
-        assertEquals("https://www.tinkoff.ru/mobile-operator/tariffs/", driver.getCurrentUrl());
-        driver.close();
+        assertTrue(tariffs.isUrlCorrect());
     }
 
     @Test
     @DisplayName("Смена региона")
     @Description("Проверить, что суммы общей цены тарифа с выбранными пакетами и сервисами по дефолту для регионов Москва и Краснодар разные;" +
             "Проверить, что суммы общей цены тарифа с максимальными выбранными пакетами и сервисами для регионов Москва и Краснодар одинаковые")
-    public void checkRegionChange() throws InterruptedException {
-        ((JavascriptExecutor) driver).executeScript("window.open('https://www.tinkoff.ru/mobile-operator/tariffs/','_blank');");
-        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
-        driver.switchTo().window(tabs.get(1));
+    public void checkRegionChange() {
+        TariffsPage tariffs = new TariffsPage(app);
+        tariffs.open();
+        tariffs.changeRegion("Москва и Московская обл.");
+        tariffs.checkRegion("Москва и Московская область");
 
-        selectMoscow();
+        String moscowAmount = tariffs.getAmount();
 
-        wait.until(ExpectedConditions.textToBePresentInElement(driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")),
-                "Москва и Московская область"));
+        tariffs.changeRegion("Краснодарский кр.");
 
-        String moscowAmount = getAmount("//h3[@data-qa-file='UITitle']");
-
-        driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
-        driver.findElement(By.xpath("//div[text()='Краснодарский кр.']")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@name='headerSlim']")));
-
-        String krasnodarAmount = getAmount("//h3[@data-qa-file='UITitle']");
+        String krasnodarAmount = tariffs.getAmount();
         assertNotEquals(moscowAmount, krasnodarAmount);
 
-        Checkbox unlimitedSms = new Checkbox("//input[@id=2048]"),
-                modemMode = new Checkbox("//input[@id=2058]");
-        Select internet = new Select("//select[@name='internet']/parent::div"),
-                calls = new Select("//select[@name='calls']/parent::div");
+        tariffs.setMaxSettings();
 
-        unlimitedSms.check(driver);
-        internet.selectOption(driver, "Безлимитный интернет");
-        modemMode.check(driver);
-        calls.selectOption(driver, "Безлимитные минуты");
+        String krasnodarAmountMax = tariffs.getAmount();
 
-        String krasnodarAmountMax = getAmount("//h3[@data-qa-file='UITitle']");
+        tariffs.changeRegion("Москва и Московская обл.");
+        tariffs.setMaxSettings();
+        String moscowAmountMax = tariffs.getAmount();
 
-        driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).click();
-        driver.findElement(By.xpath("//div[text()='Москва и Московская обл.']")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@name='headerSlim']")));
-
-        unlimitedSms.check(driver);
-        internet.selectOption(driver, "Безлимитный интернет");
-        modemMode.check(driver);
-        calls.selectOption(driver, "Безлимитные минуты");
-
-        String moscowAmountMax = getAmount("//h3[@data-qa-file='UITitle']");
         assertEquals(moscowAmountMax, krasnodarAmountMax);
-
-        driver.close();
     }
 
-    @Test
+ @Test
     @DisplayName("Активная кнопка")
     @Description("Проверить, что кнопка «Заказать SIM-карту» активна после отключения всех пакетов и сервисов")
-    public void checkActiveButton() throws InterruptedException {
-        ((JavascriptExecutor) driver).executeScript("window.open('https://www.tinkoff.ru/mobile-operator/tariffs/','_blank');");
+    public void checkActiveButton() {
+
+/*           ((JavascriptExecutor) driver).executeScript("window.open('https://www.tinkoff.ru/mobile-operator/tariffs/','_blank');");
         ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(1));
 
@@ -131,11 +107,7 @@ public class TariffsTest extends BaseRunner {
         }
 
         driver.findElement(By.xpath("//div[text()='Москва и Московская обл.']")).click();
-        assertEquals("Москва и Московская область", driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).getText());
-    }
-
-    private String getAmount(String locator) {
-        return StringUtils.join(driver.findElement(By.xpath(locator)).getText().split("\\D+"), "").trim();
+        assertEquals("Москва и Московская область", driver.findElement(By.xpath("//div[@class='MvnoRegionConfirmation__title_DOqnW']")).getText());*/
     }
 
 }

@@ -1,40 +1,40 @@
 package Pages;
 
+import Application.Application;
+import Elements.Checkbox;
+import Elements.Select;
 import org.apache.maven.shared.utils.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class TariffsPage extends BasePage {
 
     private final String URL = "https://www.tinkoff.ru/mobile-operator/tariffs/";
     private final String PAGE_NAME = "Тарифы Тинькофф Мобайла";
 
-    public TariffsPage(WebDriver driver) {
-        super(driver);
-        PageFactory.initElements(driver, this);
+    private String regionXPath = "//div[@class='MvnoRegionConfirmation__title_DOqnW']";
+    private String amountXPath = "//h3[@data-qa-file='UITitle']";
+
+    public TariffsPage(Application app) {
+        super(app);
     }
 
+    public TariffsPage() {
+        super();
+    }
 
-
-    @FindBy(xpath = "//span[@data-qa-file='MvnoRegionConfirmation'][contains(text(), 'Ваш регион —')]")
-    WebElement regionQuestion;
-
-    @FindBy(xpath = "//span[contains(@class, 'MvnoRegionConfirmation__optionRejection_1NrnL')]")
-    WebElement regionQuestionReject;
-
-    @FindBy(xpath = "//div[@class='MvnoRegionConfirmation__title_DOqnW']")
-    WebElement region;
-
-    public void open() {
+        public void open() {
         goTo(URL);
     }
 
     public void openInNewTab() {
         openNewTab(URL);
-        switchToTab("");
+        switchToTab(PAGE_NAME);
     }
 
     public boolean isPageTitleCorrect() {
@@ -46,21 +46,39 @@ public class TariffsPage extends BasePage {
     }
 
     public void changeRegion(String regionToChange) {
-        if (regionQuestion.isDisplayed()) {
-            regionQuestionReject.click();
-        } else {
-            this.region.click();
+        try {
+            driver.findElement(By.xpath("//span[@data-qa-file='MvnoRegionConfirmation'][contains(text(), 'Ваш регион —')]")).isDisplayed();
+            driver.findElement(By.xpath("//span[contains(@class, 'MvnoRegionConfirmation__optionRejection_1NrnL')]")).click();
+        }
+        catch (NoSuchElementException nee) {
+            driver.findElement(By.xpath(regionXPath)).click();
         }
         driver.findElement(By.xpath("//div[text()='" + regionToChange + "']")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@name='headerSlim']")));
         logger.info("Установили регион " + regionToChange);
     }
 
-    public boolean checkRegion(String regionTocheck) {
-        return region.getText().equals(regionTocheck);
+    public boolean checkRegion(String regionToCheck) {
+        return driver.findElement(By.xpath(regionXPath)).getText().equals(regionToCheck);
     }
 
-    private String getAmount(String locator) {
-        return StringUtils.join(driver.findElement(By.xpath(locator)).getText().split("\\D+"), "").trim();
+    public String getAmount() {
+        logger.info("Считаем общую цену тарифа");
+        return StringUtils.join(driver.findElement(By.xpath(amountXPath)).getText().split("\\D+"), "").trim();
+    }
+
+    public void setMaxSettings() {
+        Checkbox unlimitedSms = new Checkbox("//input[@id=2048]"),
+                modemMode = new Checkbox("//input[@id=2058]");
+        Select internet = new Select("//select[@name='internet']/parent::div"),
+                calls = new Select("//select[@name='calls']/parent::div");
+
+        unlimitedSms.check(driver);
+        internet.selectOption(driver, "Безлимитный интернет");
+        modemMode.check(driver);
+        calls.selectOption(driver, "Безлимитные минуты");
+
+        logger.info("Установили максимальные настройки тарифов");
     }
 
 }

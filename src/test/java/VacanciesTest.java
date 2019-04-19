@@ -1,10 +1,5 @@
-import Elements.Button;
-import Elements.Checkbox;
-import Elements.Select;
-import Elements.TextInput;
+import Application.BaseRunner;
 import Pages.VacanciesPage;
-import com.sun.org.glassfish.gmbal.Description;
-import org.apache.maven.shared.utils.StringUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,9 +10,9 @@ import org.openqa.selenium.*;
 @DisplayName("Вакансии в Тинькофф")
 public class VacanciesTest extends BaseRunner {
 
-    VacanciesPage vp = new VacanciesPage(driver);
+    VacanciesPage vp = new VacanciesPage(app);
 
-    @Test
+/*    @Test
     public void checkEmptyFields() {
         driver.get(baseUrl);
 
@@ -89,6 +84,6 @@ public class VacanciesTest extends BaseRunner {
 
         assertEquals("Код города/оператора должен начинаться с цифры 3, 4, 5, 6, 8, 9",
                 driver.findElement(By.xpath("(//div[contains(@class, 'ui-form-field-error-message') and contains(@class, 'ui-form-field-error-message_ui-form')])[5]")).getText());
-    }
+    }*/
 
 }

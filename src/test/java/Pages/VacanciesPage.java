@@ -1,5 +1,6 @@
 package Pages;
 
+import Application.Application;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -9,9 +10,17 @@ public class VacanciesPage extends BasePage {
 
     private final String URL = "https://www.tinkoff.ru/mobile-operator/tariffs/";
 
-    public VacanciesPage(WebDriver driver) {
-        super(driver);
-        PageFactory.initElements(driver, this);
+//    public VacanciesPage(WebDriver driver) {
+//        super(driver);
+//        PageFactory.initElements(driver, this);
+//    }
+
+    public VacanciesPage(Application app) {
+        super(app);
+    }
+
+    public VacanciesPage() {
+        super();
     }
 
     @FindBy(xpath = "//input[@name='name']")
@@ -28,4 +37,8 @@ public class VacanciesPage extends BasePage {
 
     @FindBy(xpath = "//input[@name='phone']")
     WebElement phone;
+
+    public void open() {
+        goTo(URL);
+    }
 }

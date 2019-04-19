@@ -1,5 +1,6 @@
 package Pages;
 
+import Application.Application;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.slf4j.Logger;
@@ -8,40 +9,41 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 
-public class BasePage {
 
-    protected WebDriver driver;
-    protected WebDriverWait wait;
-    protected Logger logger;
+public class BasePage extends Application {
 
-    public BasePage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, 5);
-        logger = LoggerFactory.getLogger(BasePage.class);
+    public BasePage(Application app) {
+        super(app);
+    }
+
+    public BasePage() {
+        super();
     }
 
     public void goTo(String url) {
-        this.driver.navigate().to(url);
+        driver.navigate().to(url);
         logger.info("Открыта страница " + url);
     }
 
     public void openNewTab(String url) {
         ((JavascriptExecutor) driver).executeScript("window.open('" + url + "','_blank');");
+        logger.info("Открыта страница " + url);
     }
 
     public void switchToTab(String tabName) {
-        this.driver.switchTo().window(tabName);
-        this.wait.until(ExpectedConditions.titleContains(tabName));
+        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(1));
+        wait.until(ExpectedConditions.titleContains(tabName));
         logger.info("Переключились на вкладку \"" + tabName + "\"");
     }
 
-    public void closeTab(String tabName) {
-        if (!tabName.equals(this.driver.getTitle())) {
-            switchToTab(tabName);
-        }
+    public void closeCurrentTab() {
+        String title = this.driver.getTitle();
         this.driver.close();
-        logger.info("Закрыта вкладка \"" + tabName + "\"");
+        logger.info("Закрыта вкладка \"" + title + "\"");
     }
 
     public boolean checkUrl(String url) {
