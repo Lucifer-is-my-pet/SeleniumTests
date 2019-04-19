@@ -29,8 +29,8 @@ public class VacanciesPage extends BasePage {
                 city = new TextInput("//input[@name='city']"),
                 email = new TextInput("//input[@name='email']"),
                 phone = new TextInput("//input[@name='phone']");
-        Button addAnotherLink = new Button("//div[@class='schema__addSocialLink_Yyu6i']"),
-                orderSim = new Button("//button[@aria-label='Отправить']"); // Добавить ещё ссылку
+        Button addAnotherLink = new Button("//div[@class='schema__addSocialLink_Yyu6i']"), // Добавить ещё ссылку
+                orderSim = new Button("//button[@aria-label='Отправить']");
         Checkbox conditions = new Checkbox("//div[@class='ui-checkbox__check']"); // Я согласен с условиями передачи информации
 
         name.click(driver);

@@ -14,7 +14,7 @@ public class TariffsTest extends BaseRunner {
     @Test
     @DisplayName("Переключение вкладок")
     public void checkTabsSwitching() {
-        VacanciesPage vp = new VacanciesPage(app); // не уверена, что это всё ещё нужно, оставляю, раз было в предыдущей версии
+        VacanciesPage vp = new VacanciesPage(app); // не уверена, что это всё ещё нужно, оставляю, поскольку было в предыдущей версии
         vp.open();
 
         GoogleMainPage google = new GoogleMainPage(app);
